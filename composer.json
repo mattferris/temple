@@ -1,0 +1,14 @@
+{
+    "name": "mattferris/staccato",
+    "description": "A minimalist template library for native PHP templates",
+    "license": "BSD-2-Clause",
+    "autoload": {
+        "psr-4": { "MattFerris\\Staccato\\": "src/" }
+    },
+    "authors": [
+        {
+            "name": "Matt Ferris",
+            "email": "matt@bueller.ca"
+        }
+    ]
+}
