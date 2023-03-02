@@ -12,9 +12,10 @@
  * www.bueller.ca/staccato/license
  */
 
-namespace MattFerris\Staccato;
+namespace MattFerris\Staccato\Plugins\Cache;
 
 use DateTime;
+use MattFerris\Staccato\CacheInterface;
 
 
 /**
