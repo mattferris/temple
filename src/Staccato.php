@@ -112,7 +112,7 @@ class Staccato
      * @param string[] $paths Optional list of additional search paths
      * @return string The resolved template path
      */
-    protected function resolve(string $name, array $paths = []): string {
+    public function resolve(string $name, array $paths = []): string {
         $paths = array_merge($this->paths, $paths);
 
         if (strpos($name, ':') !== false) {
