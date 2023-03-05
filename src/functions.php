@@ -147,7 +147,7 @@ function incl(Template $template, string $name, array $vars = []): string {
  * @param string $option The template option
  * @param mixed $value The value of the option
  */
-function set(Template $template, string $option, $value) {
+function opt(Template $template, string $option, $value) {
     switch ($option) {
         case 'cachemode':
             break;
@@ -158,3 +158,26 @@ function set(Template $template, string $option, $value) {
     $method = "set{$option}";
     $template->$method($value);
 }
+
+
+/**
+ * Alias of opt(); deprecated
+ */
+function set(Template $template, string $option, $value) {
+    trigger_error("set() is deprecated and will be removed in a future release, use opt() instead", E_USER_NOTICE);
+    return opt($template, $option, $value);
+}
+
+
+/**
+ * Define a variable within the template. Required if you want to define
+ * variables for use in extended templates.
+ *
+ * @param Template $template The current template
+ * @param string $name The variable name
+ * @param mixed $value The value of the option
+ */
+function let(Template $template, string $name, $value) {
+    $template->setVariable($name, $value);
+}
+

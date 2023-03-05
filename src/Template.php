@@ -178,6 +178,27 @@ class Template
 
 
     /**
+     * Return the currently defined variables for the template
+     *
+     * @return array The defined variables
+     */
+    public function getVariables(): array {
+        return $this->vars;
+    }
+
+
+    /**
+     * Define a variable for the template
+     *
+     * @param string $name The variable name
+     * @param mixed $value The variable value
+     */
+    public function setVariable(string $name, $value) {
+        $this->vars[$name] = $value;
+    }
+
+
+    /**
      * Return a new template instance
      *
      * @param string $name Path to template
@@ -199,6 +220,7 @@ class Template
         $template = $this->newTemplate($name);
         $template->setCacheMode($this->cacheMode);
         $template->prepare();
+        $this->vars = array_merge($template->getVariables(), $this->vars);
         $this->blocks = $template->getBlocks();
 
         $this->root = $root = $this->blocks['.'];
