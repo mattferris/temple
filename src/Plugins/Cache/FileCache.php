@@ -123,7 +123,7 @@ class FileCache implements CacheInterface
     public function put(string $id, string $contents, int $ttl = 3600) {
         $file = $this->path.DIRECTORY_SEPARATOR.$id;
 
-        $date = (new DateTime("+$ttl seconds"))->format(DATE_ATOM);;
+        $date = (new DateTime("+$ttl seconds"))->format(DATE_ATOM);
         $csum = dechex(crc32($contents));
 
         file_put_contents("{$file}.tmp", $date.$csum.$contents);
