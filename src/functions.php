@@ -119,13 +119,6 @@ function import(Template $template, string $name, string $as) {
 }
 
 
-function macro(Template $template, string $name): callable {
-    return function (array $vars = []) use ($template, $name) {
-        return incl($template, $name, $vars);
-    };
-}
-
-
 /**
  * Output the contents of the parent block (if extended)
  *
