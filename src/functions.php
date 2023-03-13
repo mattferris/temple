@@ -43,6 +43,19 @@ function begin(Template $template, string $name) {
 
 
 /**
+ * Return the content from another block
+ * 
+ * @param Template $template The current template
+ * @param string $name The name of the block
+ * @return ?string The contentes of the specified block
+ */
+function content(Template $template, string $name): ?string {
+    $block = $template->getBlock($name);
+    return is_null($block) ? null : $block->render();
+}
+
+
+/**
  * Dump the contents of a template variable.
  *
  * @param mixed $var The variable to dump
@@ -90,6 +103,19 @@ function end(Template $template) {
  */
 function extend(Template $template, string $name) {
     $template->extend($name);
+}
+
+
+/**
+ * Import blocks from another template. Imported blocks are stored in the
+ * namespace $as, and are referenced using content().
+ *
+ * @param Template $template The current template
+ * @param string $name The name of the template to import
+ * @param string $as The namespace for the imported blocks
+ */
+function import(Template $template, string $name, string $as) {
+    $template->import($name, $as);
 }
 
 

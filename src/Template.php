@@ -123,6 +123,18 @@ class Template
 
 
     /**
+     * Return the specified block for this template
+     *
+     * @pararm string $name The name of the block to return
+     * @return BlockInterface|null The specified block, or null if the block doesn't exist
+     */
+    public function getBlock(string $name): ?BlockInterface {
+        if (strpos($name, '.') !== false) $name = "_{$name}";
+        return $this->blocks[$name] ?: null;
+    }
+
+
+    /**
      * Return the cache instance
      *
      * @return CacheInterface|null The cache instance
@@ -229,6 +241,23 @@ class Template
         $root->setExtended(true);
         $this->extends = $name;
 
+    }
+
+
+    /**
+     * Import blocks from the specified template. Imported blocks are not
+     * available during normal rendering of the template. 'content()' must be
+     * used to access the content from an imported block.
+     *
+     * @param string $name The name fo the template to import
+     */
+    public function import(string $name, string $as) {
+        $template = $this->newTemplate($name);
+        $template->prepare();
+        foreach ($template->getBlocks() as $blkname => $blkobj) {
+            $blkname = "_{$as}.{$blkname}";
+            $this->blocks[$blkname] = $blkobj;
+        }
     }
 
 
