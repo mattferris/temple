@@ -90,13 +90,29 @@ class Staccato
 
 
     /**
+     * Check if a template exists, resolving namespaces if required
+     *
+     * @param string $name The template name
+     * @return bool True if template exists, otherwise false
+     */
+    public function templateExists(string $name): bool {
+        try {
+            $this->resolve($name);
+            return true;
+        } catch(TemplateNotFoundException $e) {
+            return false;
+        }
+    }
+
+
+    /**
      * Resolve a template name to a file path
      *
      * @param string $name The template name to resolve
      * @param string[] $paths Optional list of additional search paths
      * @return string The resolved template path
      */
-    protected function resolve(string $name, array $paths = []): string {
+    public function resolve(string $name, array $paths = []): string {
         $paths = array_merge($this->paths, $paths);
 
         if (strpos($name, ':') !== false) {

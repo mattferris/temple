@@ -43,6 +43,19 @@ function begin(Template $template, string $name) {
 
 
 /**
+ * Return the content from another block
+ * 
+ * @param Template $template The current template
+ * @param string $name The name of the block
+ * @return ?string The contentes of the specified block
+ */
+function content(Template $template, string $name): ?string {
+    $block = $template->getBlock($name);
+    return is_null($block) ? null : $block->render();
+}
+
+
+/**
  * Dump the contents of a template variable.
  *
  * @param mixed $var The variable to dump
@@ -93,10 +106,16 @@ function extend(Template $template, string $name) {
 }
 
 
-function macro(Template $template, string $name): callable {
-    return function (array $vars = []) use ($template, $name) {
-        return incl($template, $name, $vars);
-    };
+/**
+ * Import blocks from another template. Imported blocks are stored in the
+ * namespace $as, and are referenced using content().
+ *
+ * @param Template $template The current template
+ * @param string $name The name of the template to import
+ * @param string $as The namespace for the imported blocks
+ */
+function import(Template $template, string $name, string $as) {
+    $template->import($name, $as);
 }
 
 
@@ -147,7 +166,7 @@ function incl(Template $template, string $name, array $vars = []): string {
  * @param string $option The template option
  * @param mixed $value The value of the option
  */
-function set(Template $template, string $option, $value) {
+function opt(Template $template, string $option, $value) {
     switch ($option) {
         case 'cachemode':
             break;
@@ -158,3 +177,26 @@ function set(Template $template, string $option, $value) {
     $method = "set{$option}";
     $template->$method($value);
 }
+
+
+/**
+ * Alias of opt(); deprecated
+ */
+function set(Template $template, string $option, $value) {
+    trigger_error("set() is deprecated and will be removed in a future release, use opt() instead", E_USER_NOTICE);
+    return opt($template, $option, $value);
+}
+
+
+/**
+ * Define a variable within the template. Required if you want to define
+ * variables for use in extended templates.
+ *
+ * @param Template $template The current template
+ * @param string $name The variable name
+ * @param mixed $value The value of the option
+ */
+function let(Template $template, string $name, $value) {
+    $template->setVariable($name, $value);
+}
+
