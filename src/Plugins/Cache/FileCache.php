@@ -124,7 +124,7 @@ class FileCache implements CacheInterface
         $file = $this->path.DIRECTORY_SEPARATOR.$id;
 
         $date = (new DateTime("+$ttl seconds"))->format(DATE_ATOM);
-        $csum = dechex(crc32($contents));
+        $csum = sprintf('%0.8s', dechex(crc32($contents)));
 
         file_put_contents("{$file}.tmp", $date.$csum.$contents);
         rename("{$file}.tmp", $file);
