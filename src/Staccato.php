@@ -77,6 +77,16 @@ class Staccato
 
 
     /**
+     * Get the configured cache implementation
+     *
+     * @return CacheInterface
+     */
+    public function getCache(): CacheInterface {
+        return $this->cache;
+    }
+
+
+    /**
      * Set a cache implementation
      *
      * @param CacheInterface $cache The cache implementation

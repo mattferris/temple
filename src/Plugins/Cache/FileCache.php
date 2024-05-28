@@ -16,6 +16,7 @@ namespace MattFerris\Staccato\Plugins\Cache;
 
 use DateTime;
 use MattFerris\Staccato\CacheInterface;
+use RuntimeException;
 
 
 /**
@@ -31,6 +32,22 @@ class FileCache implements CacheInterface
      */
     public function __construct(string $path) {
         $this->path = $path;
+
+        if (!file_exists($this->path) || !is_dir($this->path)) {
+            throw new RuntimeException('nonexistent cache folder: '.$this->path);
+        }
+    }
+
+
+    /**
+     * Generate the cache filename for a given ID
+     *
+     * @param string $id The entry ID
+     * @return string
+     */
+    protected function file(string $id): string {
+        $sum = hash('sha256', $id);
+        return $this->path.DIRECTORY_SEPARATOR.substr($sum, 0, 2).DIRECTORY_SEPARATOR.$sum;
     }
 
 
@@ -57,7 +74,7 @@ class FileCache implements CacheInterface
      * @return bool True if there is a fresh entry, otherwise false
      */
     public function has(string $id): bool {
-        $file = $this->path.DIRECTORY_SEPARATOR.$id;
+        $file = $this->file($id);
         if (!file_exists($file)) return false;
 
         $fh = fopen($file, 'r');
@@ -83,7 +100,7 @@ class FileCache implements CacheInterface
             throw new CacheIdNotFoundException($id);
         }
      
-        $file = $this->path.DIRECTORY_SEPARATOR.$id;
+        $file = $this->file($id);
 
         $fh = fopen($file, 'r');
         flock($fh, LOCK_SH);
@@ -121,13 +138,56 @@ class FileCache implements CacheInterface
      * @param int $ttl The number of seconds until the entry expires
      */
     public function put(string $id, string $contents, int $ttl = 3600) {
-        $file = $this->path.DIRECTORY_SEPARATOR.$id;
+        if ($id === '') {
+            throw new RuntimeException('empty cache ID');
+        }
+
+        $file = $this->file($id);
 
         $date = (new DateTime("+$ttl seconds"))->format(DATE_ATOM);
         $csum = sprintf('%0.8s', dechex(crc32($contents)));
 
         file_put_contents("{$file}.tmp", $date.$csum.$contents);
         rename("{$file}.tmp", $file);
+    }
+
+
+    /**
+     * Clear a signle cache entry
+     *
+     * @param string $id
+     */
+    public function del(string $id) {
+        $file = $this->file($id);
+        if (file_exists($file)) {
+            unlink($file);
+        }
+    }
+
+
+    /**
+     * Clear all the cache entries
+     */
+    public function clear() {
+        $paths = [$this->path];
+        while ($path = array_shift($paths)) {
+
+            $dir = opendir($this->path);
+            while ($file = readdir($this->path)) {
+
+                if (strpos($file, '.') === 0) continue;
+
+                if (is_dir($file)) {
+                    array_unshift($paths, $file);
+                    continue;
+                }
+
+                unlink($file);
+
+            }
+            closedir($dir);
+
+        }
     }
 }
 
