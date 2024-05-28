@@ -15,6 +15,7 @@
 namespace MattFerris\Staccato;
 
 use MattFerris\Staccato\Plugins\Markdown\MarkdownBlock;
+use MattFerris\Staccato\Plugins\Markdown\Parsedown;
 
 
 /**
