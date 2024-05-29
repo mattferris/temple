@@ -150,6 +150,8 @@ class FileCache implements CacheInterface
         $date = (new DateTime("+$ttl seconds"))->format(DATE_ATOM);
         $csum = sprintf('%0.8s', dechex(crc32($contents)));
 
+        if (!file_exists(dirname($file))) mkdir(dirname($file));
+
         file_put_contents("{$file}.tmp", $date.$csum.$contents);
         rename("{$file}.tmp", $file);
     }
