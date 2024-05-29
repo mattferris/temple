@@ -15,7 +15,10 @@
 namespace MattFerris\Staccato\Plugins\Cache;
 
 use DateTime;
+use MattFerris\Staccato\CacheIdNotFoundException;
 use MattFerris\Staccato\CacheInterface;
+use MattFerris\Staccato\CacheValidationException;
+use MattFerris\Staccato\CacheExpiredException;
 use RuntimeException;
 
 
